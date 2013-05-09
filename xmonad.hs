@@ -3,6 +3,8 @@ import XMonad.Actions.CycleWS
 import XMonad.Actions.CycleWindows
 import XMonad.Util.EZConfig        -- append key/mouse bindings
   
+-- 关于GTK的外观，建议使用一个角lxappearance的东西设置一下GTK的主题
+
 myKeys = [ 
   ("M1-<Tab>"   , cycleRecentWindows [xK_Alt_L] xK_Tab xK_Tab ) -- classic alt-tab behaviour
   , ("M-<Return>" , spawn "xterm")
