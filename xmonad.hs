@@ -4,6 +4,7 @@ import XMonad.Actions.CycleWindows
 import XMonad.Util.EZConfig        -- append key/mouse bindings
   
 -- 关于GTK的外观，建议使用一个角lxappearance的东西设置一下GTK的主题
+-- 切换显示器只要将鼠标移到另一个显示器就好
 
 myKeys = [ 
   ("M1-<Tab>"   , cycleRecentWindows [xK_Alt_L] xK_Tab xK_Tab ) -- classic alt-tab behaviour
