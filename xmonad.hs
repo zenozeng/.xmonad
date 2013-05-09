@@ -2,6 +2,7 @@ import XMonad
 import XMonad.Actions.CycleWS    
 import XMonad.Actions.CycleWindows
 import XMonad.Util.EZConfig        -- append key/mouse bindings
+import XMonad.Layout.IndependentScreens  
   
 -- 关于GTK的外观，建议使用一个角lxappearance的东西设置一下GTK的主题
 -- 切换显示器只要将鼠标移到另一个显示器就好
@@ -25,7 +26,7 @@ myKeys = [
   , ("M-g", spawn "google-chrome")
   , ("M-f", spawn "firefox")
   , ("M-e", spawn "emacsclient -c -a '' --no-wait")  
-  --  , ("M-e"        , spawn "nautilus"                      ) -- launch file manager
+  , ("M-S-f"        , spawn "nautilus"                      ) -- launch file manager
 
   , ("M-q"        , spawn "xmonad --restart"              ) -- restart xmonad w/o recompiling
   ]
