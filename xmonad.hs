@@ -28,7 +28,7 @@ myKeys = [
   , ("M-g", spawn "google-chrome")
   , ("M-f", spawn "firefox")
   , ("M-e", spawn "emacsclient -c -a '' --no-wait")  
-  , ("M-S-f"        , spawn "nautilus"                      ) -- launch file manager
+  , ("M-o"        , spawn "nautilus"                      ) -- launch file manager
 
   , ("M-q"        , spawn "xmonad --restart"              ) -- restart xmonad w/o recompiling
   ]
