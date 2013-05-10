@@ -5,7 +5,8 @@ import XMonad.Util.EZConfig        -- append key/mouse bindings
 import XMonad.Layout.IndependentScreens  
 
 import qualified XMonad.StackSet as W
-  
+import qualified Data.Map as M  
+
 -- 关于GTK的外观，建议使用一个角lxappearance的东西设置一下GTK的主题
 -- 切换显示器只要将鼠标移到另一个显示器就好
 
@@ -18,6 +19,7 @@ myKeys = [
   , ("M-S-n", shiftToNext) -- move client to next workspace
   , ("M-S-p" , shiftToPrev) -- move client to prev workspace
   , ("M-w", kill)
+  , ("M-S-g", spawn "gimp")
 
   -- volume control 
   , ("M-=", spawn "amixer sset Master 10%+")
@@ -34,6 +36,16 @@ myKeys = [
   ]
          
 
+
+myManageHook = composeAll
+    [ (role =? "gimp-toolbox" <||> role =? "gimp-image-window") --> (ask >>= doF . W.sink)
+    -- Note: hooks earlier in this list override later ones, so put the
+    -- role hooks earlier than 'className =? "Gimp" ...' if you use both.
+ 
+    -- other skipped manageHooks...
+    ]
+  where role = stringProperty "WM_WINDOW_ROLE"
+
 main = xmonad $defaultConfig
        {
          -- basic config
@@ -41,6 +53,7 @@ main = xmonad $defaultConfig
          focusFollowsMouse  = True,
          borderWidth        = 2,
          modMask            = mod4Mask, -- use super
+         manageHook         = myManageHook,
          normalBorderColor  = "#333",
          focusedBorderColor = "#333"
        }
