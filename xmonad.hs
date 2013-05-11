@@ -19,7 +19,6 @@ myKeys = [
   , ("M-S-n", shiftToNext) -- move client to next workspace
   , ("M-S-p" , shiftToPrev) -- move client to prev workspace
   , ("M-w", kill)
-  , ("M-S-g", spawn "gimp")
 
   -- volume control 
   , ("M-=", spawn "amixer sset Master 10%+")
