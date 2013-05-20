@@ -35,6 +35,7 @@ myKeys = [
   ]
          
 
+myStartupHook = spawn "bash /home/zeno/sh/startup.sh"
 
 myManageHook = composeAll
     [ (role =? "gimp-toolbox" <||> role =? "gimp-image-window") --> (ask >>= doF . W.sink)
@@ -50,6 +51,7 @@ main = xmonad $defaultConfig
          -- basic config
          terminal           = "xterm",
          focusFollowsMouse  = True,
+         startupHook        = myStartupHook,
          borderWidth        = 2,
          modMask            = mod4Mask, -- use super
          manageHook         = myManageHook,
