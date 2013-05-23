@@ -12,7 +12,7 @@ import qualified Data.Map as M
 
 myKeys = [ 
   ("M1-<Tab>"   , windows W.swapMaster)
-  , ("M-<Return>" , spawn "xterm")
+  , ("M-<Return>" , spawn "gnome-terminal")
   , ("M-<Tab>", windows W.focusDown)
   , ("M-n"  , nextWS) -- go to next workspace
   , ("M-p"  , prevWS) -- go to prev workspace
@@ -30,12 +30,12 @@ myKeys = [
   , ("M-f", spawn "firefox")
   , ("M-e", spawn "emacsclient -c -a '' --no-wait")  
   , ("M-o"        , spawn "dolphin"                      ) -- launch file manager
-
+  , ("M-c s", spawn "gksu synaptic")
   , ("M-q"        , spawn "xmonad --restart"              ) -- restart xmonad w/o recompiling
   ]
          
 
-myStartupHook = spawn "bash /home/zeno/sh/startup.sh"
+myStartupHook = spawn "bash /home/zeno/sh/startup.sh" 
 
 myManageHook = composeAll
     [ (role =? "gimp-toolbox" <||> role =? "gimp-image-window") --> (ask >>= doF . W.sink)
