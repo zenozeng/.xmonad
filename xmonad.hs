@@ -2,7 +2,8 @@ import XMonad
 import XMonad.Actions.CycleWS    
 import XMonad.Actions.CycleWindows
 import XMonad.Util.EZConfig        -- append key/mouse bindings
-import XMonad.Layout.IndependentScreens  
+import XMonad.Layout.IndependentScreens
+import XMonad.Actions.SpawnOn
 
 import qualified XMonad.StackSet as W
 import qualified Data.Map as M  
@@ -25,12 +26,13 @@ myKeys = [
   , ("M--", spawn "amixer sset Master 10%-")
 
   -- apps
-  , ("M-r", spawn "gmrun"                         ) -- app launcher
+  , ("M-r", spawn "gmrun") -- app launcher
   , ("M-g", spawn "google-chrome")
-  , ("M-f", spawn "firefox")
+--  , ("M-f", spawn "firefox")
+  , ("M-f", spawnOn "ff" "firefox")
   , ("M-e", spawn "emacsclient -c -a '' --no-wait")  
   , ("M-o"        , spawn "dolphin"                      ) -- launch file manager
-  , ("M-c s", spawn "gksu synaptic")
+  , ("M-l s", spawn "gksu synaptic")
   , ("M-q"        , spawn "xmonad --restart"              ) -- restart xmonad w/o recompiling
   ]
          
@@ -46,11 +48,25 @@ myManageHook = composeAll
     ]
   where role = stringProperty "WM_WINDOW_ROLE"
 
+
+myWorkspaces = [
+  "1:emacs",
+  "2:firefox",
+  "3:google-chrome",
+  "4:gimp",
+  "5:files",
+  "6:pdf",
+  "7:dev",
+  "8:etc"
+  ]
+
+        
 main = xmonad $defaultConfig
        {
          -- basic config
          terminal           = "xterm",
          focusFollowsMouse  = True,
+         workspaces         = myWorkspaces,
          startupHook        = myStartupHook,
          borderWidth        = 2,
          modMask            = mod4Mask, -- use super
