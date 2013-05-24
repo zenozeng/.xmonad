@@ -31,12 +31,22 @@ myKeys = [
   , ("M-l p", spawn "sleep 0.2; scrot -s")
 
     -- workspace
-  , ("M-e",  windows $ W.greedyView "emacs")
-  , ("M-f",  windows $ W.greedyView "ff")
-  , ("M-g",  windows $ W.greedyView "chrome")
-  , ("M-o",  windows $ W.greedyView "files")
+  , ("M-e", do
+        windows $ W.greedyView "emacs"
+        spawn "pstree | grep emacs || emacsclient -c -a '' --no-wait")
+  , ("M-f", do
+        windows $ W.greedyView "ff"
+        spawn "pstree | grep iceweasel || firefox")
+  , ("M-g", do
+     windows $ W.greedyView "chrome"
+     spawn "pstree | grep chrome || google-chrome")
+  , ("M-o", do
+        windows $ W.greedyView "files"
+        spawn "pstree | grep dolphin || dolphin")
   , ("M-t",  windows $ W.greedyView "etc")
-  , ("M-s",  windows $ W.greedyView "shell")
+  , ("M-s", do
+        windows $ W.greedyView "shell"
+        spawn "pstree | grep gnome-terminal || gnome-terminal")
 
     -- apps
   , ("M-r", spawn "gmrun") -- app launcher
@@ -54,13 +64,6 @@ myKeys = [
 
 myStartupHook = do
   spawn "bash /home/zeno/sh/startup.sh"
-  windows $ W.greedyView "emacs"
-  spawn "pstree | grep emacs || emacsclient -c -a '' --no-wait"
-  spawn "pstree | grep iceweasel || firefox"
-  spawn "pstree | grep chrome || google-chrome" 
-  spawn "pstree | grep dolphin || dolphin"
-  windows $ W.greedyView "shell"
-  spawn "pstree | grep gnome-terminal || gnome-terminal"
 
 myManageHook = composeAll
     [ (role =? "gimp-toolbox" <||> role =? "gimp-image-window") --> (ask >>= doF . W.sink)
