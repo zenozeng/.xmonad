@@ -4,7 +4,9 @@ import XMonad.Actions.CycleWindows
 import XMonad.Util.EZConfig        -- append key/mouse bindings
 import XMonad.Layout.IndependentScreens
 import XMonad.Actions.SpawnOn
-
+import XMonad.Actions.DynamicWorkspaces
+import Control.Monad (liftM2)
+  
 import qualified XMonad.StackSet as W
 import qualified Data.Map as M  
 
@@ -21,56 +23,75 @@ myKeys = [
   , ("M-S-p" , shiftToPrev) -- move client to prev workspace
   , ("M-w", kill)
 
-  -- volume control 
+    -- volume control 
   , ("M-=", spawn "amixer sset Master 10%+")
   , ("M--", spawn "amixer sset Master 10%-")
 
-  -- apps
+    -- print srceen
+  , ("M-l p", spawn "sleep 0.2; scrot -s")
+
+    -- workspace
+  , ("M-e",  windows $ W.greedyView "emacs")
+  , ("M-f",  windows $ W.greedyView "ff")
+  , ("M-g",  windows $ W.greedyView "chrome")
+  , ("M-o",  windows $ W.greedyView "files")
+  , ("M-t",  windows $ W.greedyView "etc")
+
+    -- apps
   , ("M-r", spawn "gmrun") -- app launcher
-  , ("M-g", spawn "google-chrome")
+--  , ("M-g", spawn "google-chrome")
 --  , ("M-f", spawn "firefox")
-  , ("M-f", spawnOn "ff" "firefox")
-  , ("M-e", spawn "emacsclient -c -a '' --no-wait")  
-  , ("M-o"        , spawn "dolphin"                      ) -- launch file manager
+--  , ("M-e", spawn "emacsclient -c -a '' --no-wait")  
+--  , ("M-o"        , spawn "dolphin"                      ) -- launch file manager
   , ("M-l s", spawn "gksu synaptic")
   , ("M-q"        , spawn "xmonad --restart"              ) -- restart xmonad w/o recompiling
+  , ("<XF86AudioMute>",	spawn "amixer -q set Master toggle")
+  , ("<XF86AudioLowerVolume>",	spawn "amixer -q set Master 3%-")
+  , ("<XF86AudioRaiseVolume>",	spawn "amixer -q set Master 3%+")    
   ]
          
 
-myStartupHook = spawn "bash /home/zeno/sh/startup.sh" 
+myStartupHook = do
+  spawn "bash /home/zeno/sh/startup.sh"
+  spawn "pstree | grep iceweasel || firefox"
+  spawn "pstree | grep chrome || google-chrome" 
+  spawn "pstree | grep dolphin || dolphin"
+  windows $ W.greedyView "emacs"
+  spawn "pstree | grep emacs || emacsclient -c -a '' --no-wait"
 
 myManageHook = composeAll
     [ (role =? "gimp-toolbox" <||> role =? "gimp-image-window") --> (ask >>= doF . W.sink)
-    -- Note: hooks earlier in this list override later ones, so put the
-    -- role hooks earlier than 'className =? "Gimp" ...' if you use both.
- 
-    -- other skipped manageHooks...
+    , (className =? "Iceweasel") --> doShift "ff"
+--    , (className =? "Iceweasel") --> doF (W.shift "ff")
+--    , (className =? "Emacs") --> doF (W.shift "emacs")
+--    , (className =? "Iceweasel") --> viewShift "ff"
+    , (className =? "Dolphin") --> doShift "files"
+    , (className =? "Google-chrome") --> doShift "chrome"
     ]
   where role = stringProperty "WM_WINDOW_ROLE"
+--        viewShift = doF . liftM2 (.) W.greedyView W.shift
 
 
 myWorkspaces = [
-  "1:emacs",
-  "2:firefox",
-  "3:google-chrome",
-  "4:gimp",
-  "5:files",
-  "6:pdf",
-  "7:dev",
-  "8:etc"
+  "emacs",
+  "ff",
+  "chrome",
+  "files",
+  "etc"
   ]
 
         
-main = xmonad $defaultConfig
+main = do
+  xmonad $defaultConfig
        {
          -- basic config
-         terminal           = "xterm",
+         terminal           = "gnome-terminal",
          focusFollowsMouse  = True,
          workspaces         = myWorkspaces,
          startupHook        = myStartupHook,
          borderWidth        = 2,
          modMask            = mod4Mask, -- use super
-         manageHook         = myManageHook,
+         manageHook         =  myManageHook <+> manageSpawn <+> manageHook defaultConfig,
          normalBorderColor  = "#333",
          focusedBorderColor = "#333"
        }
