@@ -38,8 +38,8 @@ myKeys = [
         windows $ W.greedyView "ff"
         spawn "pstree | grep iceweasel || firefox")
   , ("M-g", do
-     windows $ W.greedyView "chrome"
-     spawn "pstree | grep chrome || google-chrome")
+        windows $ W.greedyView "chrome"
+        spawn "pstree | grep chrome || google-chrome")
   , ("M-o", do
         windows $ W.greedyView "files"
         spawn "pstree | grep dolphin || dolphin")
