@@ -36,6 +36,7 @@ myKeys = [
   , ("M-g",  windows $ W.greedyView "chrome")
   , ("M-o",  windows $ W.greedyView "files")
   , ("M-t",  windows $ W.greedyView "etc")
+  , ("M-s",  windows $ W.greedyView "shell")
 
     -- apps
   , ("M-r", spawn "gmrun") -- app launcher
@@ -53,11 +54,13 @@ myKeys = [
 
 myStartupHook = do
   spawn "bash /home/zeno/sh/startup.sh"
+  windows $ W.greedyView "emacs"
+  spawn "pstree | grep emacs || emacsclient -c -a '' --no-wait"
   spawn "pstree | grep iceweasel || firefox"
   spawn "pstree | grep chrome || google-chrome" 
   spawn "pstree | grep dolphin || dolphin"
-  windows $ W.greedyView "emacs"
-  spawn "pstree | grep emacs || emacsclient -c -a '' --no-wait"
+  windows $ W.greedyView "shell"
+  spawn "pstree | grep gnome-terminal || gnome-terminal"
 
 myManageHook = composeAll
     [ (role =? "gimp-toolbox" <||> role =? "gimp-image-window") --> (ask >>= doF . W.sink)
@@ -77,6 +80,7 @@ myWorkspaces = [
   "ff",
   "chrome",
   "files",
+  "shell",
   "etc"
   ]
 
