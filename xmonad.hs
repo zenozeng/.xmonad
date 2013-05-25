@@ -23,12 +23,17 @@ myKeys = [
   , ("M-S-p" , shiftToPrev) -- move client to prev workspace
   , ("M-w", kill)
 
+  , ("M-q"        , spawn "xmonad --restart"              ) -- restart xmonad w/o recompiling
+
     -- volume control 
   , ("M-=", spawn "amixer sset Master 10%+")
   , ("M--", spawn "amixer sset Master 10%-")
+  , ("<XF86AudioMute>",	spawn "amixer -q set Master toggle")
+  , ("<XF86AudioLowerVolume>",	spawn "amixer -q set Master 3%-")
+  , ("<XF86AudioRaiseVolume>",	spawn "amixer -q set Master 3%+")    
 
     -- print srceen
-  , ("M-l p", spawn "sleep 0.2; scrot -s")
+  , ("<Print>", spawn "scrot PrtSc.png")
 
     -- workspace
   , ("M-e", do
@@ -38,9 +43,12 @@ myKeys = [
         windows $ W.greedyView "ff"
         spawn "pstree | grep iceweasel || firefox")
   , ("M-g", do
+        windows $ W.greedyView "gimp"
+        spawn "pstree | grep gimp || gimp")  
+  , ("M-c", do
         windows $ W.greedyView "chrome"
         spawn "pstree | grep chrome || google-chrome")
-  , ("M-o", do
+  , ("M-d", do
         windows $ W.greedyView "files"
         spawn "pstree | grep dolphin || dolphin")
   , ("M-t",  windows $ W.greedyView "etc")
@@ -50,15 +58,11 @@ myKeys = [
 
     -- apps
   , ("M-r", spawn "gmrun") -- app launcher
---  , ("M-g", spawn "google-chrome")
---  , ("M-f", spawn "firefox")
---  , ("M-e", spawn "emacsclient -c -a '' --no-wait")  
---  , ("M-o"        , spawn "dolphin"                      ) -- launch file manager
+  , ("M-l d", spawn "dolphin")
+  , ("M-l f", spawn "firefox")
+  , ("M-l c", spawn "google-chrome")    
   , ("M-l s", spawn "gksu synaptic")
-  , ("M-q"        , spawn "xmonad --restart"              ) -- restart xmonad w/o recompiling
-  , ("<XF86AudioMute>",	spawn "amixer -q set Master toggle")
-  , ("<XF86AudioLowerVolume>",	spawn "amixer -q set Master 3%-")
-  , ("<XF86AudioRaiseVolume>",	spawn "amixer -q set Master 3%+")    
+  , ("M-l e", spawn "emacsclient -c -a '' --no-wait")
   ]
          
 
@@ -84,6 +88,7 @@ myWorkspaces = [
   "chrome",
   "files",
   "shell",
+  "gimp",
   "etc"
   ]
 
