@@ -21,9 +21,15 @@ myKeys = [
   , ("M-p"  , prevWS) -- go to prev workspace
   , ("M-S-n", shiftToNext) -- move client to next workspace
   , ("M-S-p" , shiftToPrev) -- move client to prev workspace
-  , ("M-w", kill)
+  , ("M-k", kill)
 
   , ("M-q"        , spawn "xmonad --restart"              ) -- restart xmonad w/o recompiling
+
+    -- sleep
+  , ("<XF86Sleep>", spawn "sudo pm-suspend-hybrid && /usr/lib/kde4/libexec/kscreenlocker --forcelock")
+    
+    -- lock
+  , ("<XF86ScreenSaver>", spawn "/usr/lib/kde4/libexec/kscreenlocker --forcelock")
 
     -- volume control 
   , ("M-=", spawn "amixer sset Master 10%+")
@@ -41,6 +47,9 @@ myKeys = [
         spawn "pstree | grep emacs || emacsclient -c -a '' --no-wait")
   , ("M-f", do
         windows $ W.greedyView "ff"
+        spawn "pstree | grep iceweasel || firefox")
+  , ("M-w", do
+        windows $ W.greedyView "webdev"
         spawn "pstree | grep iceweasel || firefox")
   , ("M-g", do
         windows $ W.greedyView "gimp"
@@ -71,12 +80,14 @@ myStartupHook = do
 
 myManageHook = composeAll
     [ (role =? "gimp-toolbox" <||> role =? "gimp-image-window") --> (ask >>= doF . W.sink)
-    , (className =? "Iceweasel") --> doShift "ff"
+    , (className =? "Firefox" <&&> resource=? "Download") --> doFloat 
+    , (className =? "Firefox" <&&> resource =? "DTA") --> doFloat 
+--    , (className =? "Iceweasel") --> doShift "ff"
 --    , (className =? "Iceweasel") --> doF (W.shift "ff")
 --    , (className =? "Emacs") --> doF (W.shift "emacs")
 --    , (className =? "Iceweasel") --> viewShift "ff"
-    , (className =? "Dolphin") --> doShift "files"
-    , (className =? "Google-chrome") --> doShift "chrome"
+--    , (className =? "Dolphin") --> doShift "files"
+--    , (className =? "Google-chrome") --> doShift "chrome"
     ]
   where role = stringProperty "WM_WINDOW_ROLE"
 --        viewShift = doF . liftM2 (.) W.greedyView W.shift
@@ -89,6 +100,7 @@ myWorkspaces = [
   "files",
   "shell",
   "gimp",
+  "webdev", -- for mozrepl
   "etc"
   ]
 
