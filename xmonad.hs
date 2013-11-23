@@ -7,15 +7,27 @@ import XMonad.Actions.SpawnOn
 import XMonad.Actions.DynamicWorkspaces
 import Control.Monad (liftM2)
 
-import XMonad.Actions.MouseResize
-import XMonad.Layout.WindowArranger  
+import XMonad.Layout.WindowArranger
+import XMonad.Layout.BorderResize
+-- myLayout = borderResize -- (... layout setup that reacts to SetGeometry ...)
+-- main = xmonad defaultConfig { layoutHook = myLayout }
+-- myLayout = mouseResize $ windowArrange $ layoutHook defaultConfig
+
+
+-- import XMonad.Actions.MouseResize
   
 import qualified XMonad.StackSet as W
 import qualified Data.Map as M
 
+-- 鼠标左键 + Mod Key 移动，右键 + Mod Key 缩放，任意位置
+import qualified XMonad.Actions.FlexibleResize as FlexR
+
 
 -- 关于GTK的外观，建议使用一个角lxappearance的东西设置一下GTK的主题
 -- 切换显示器只要将鼠标移到另一个显示器就好
+
+-- myLayout = borderResize $ windowArrange $ layoutHook defaultConfig
+
 
 myKeys = [ 
   ("M1-<Tab>"   , windows W.swapMaster)
@@ -118,9 +130,13 @@ myWorkspaces = [
   "vbox"
   ]
 
-        
-myLayout = mouseResize $ windowArrange $ layoutHook defaultConfig
+-- myMouseBindings (XConfig {XMonad.modMask = modMask}) = M.fromList $
+--     [
+--       ((modMask, button3), (\w -> focus w >> FlexR.mouseResizeWindow w))
+--     ]
 
+
+        
 main = do
   xmonad $defaultConfig
        {
@@ -128,12 +144,14 @@ main = do
          terminal           = "gnome-terminal",
          focusFollowsMouse  = True,
          workspaces         = myWorkspaces,
-         layoutHook         = myLayout,
          startupHook        = myStartupHook,
-         borderWidth        = 2,
-         modMask            = mod4Mask, -- use super
+         borderWidth        = 5
+--         layoutHook = myLayout,
+--         , layoutHook = myLayout
+         , modMask            = mod4Mask, -- use super
          manageHook         =  myManageHook <+> manageSpawn <+> manageHook defaultConfig,
-         normalBorderColor  = "#333",
-         focusedBorderColor = "#333"
+         normalBorderColor  = "#111",
+--         mouseBindings      = myMouseBindings,
+         focusedBorderColor = "#222"
        }
        `additionalKeysP` myKeys
