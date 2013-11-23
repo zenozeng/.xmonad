@@ -6,9 +6,13 @@ import XMonad.Layout.IndependentScreens
 import XMonad.Actions.SpawnOn
 import XMonad.Actions.DynamicWorkspaces
 import Control.Monad (liftM2)
+
+import XMonad.Actions.MouseResize
+import XMonad.Layout.WindowArranger  
   
 import qualified XMonad.StackSet as W
-import qualified Data.Map as M  
+import qualified Data.Map as M
+
 
 -- 关于GTK的外观，建议使用一个角lxappearance的东西设置一下GTK的主题
 -- 切换显示器只要将鼠标移到另一个显示器就好
@@ -23,7 +27,7 @@ myKeys = [
   , ("M-S-p" , shiftToPrev) -- move client to prev workspace
   , ("M-k", kill)
 
-  , ("M-q"        , spawn "xmonad --restart"              ) -- restart xmonad w/o recompiling
+  , ("M-q"        , spawn "xmonad --restart") -- restart xmonad w/o recompiling
 
     -- sleep
   , ("<XF86Sleep>", spawn "sudo pm-suspend-hybrid && /usr/lib/kde4/libexec/kscreenlocker --forcelock")
@@ -36,7 +40,7 @@ myKeys = [
   , ("M--", spawn "amixer sset Master 10%-")
   , ("<XF86AudioMute>",	spawn "amixer -q set Master toggle")
   , ("<XF86AudioLowerVolume>",	spawn "amixer -q set Master 3%-")
-  , ("<XF86AudioRaiseVolume>",	spawn "amixer -q set Master 3%+")    
+  , ("<XF86AudioRaiseVolume>",	spawn "amixer -q set Master 3%+")
 
     -- print srceen
   , ("<Print>", spawn "scrot PrtSc.png")
@@ -44,26 +48,27 @@ myKeys = [
     -- workspace
   , ("M-e", do
         windows $ W.greedyView "emacs"
-        spawn "pstree | grep emacs || emacsclient -c -a '' --no-wait")
+        spawn "pgrep emacs || emacsclient -c -a '' --no-wait")
   , ("M-f", do
-        windows $ W.greedyView "ff"
-        spawn "pstree | grep iceweasel || firefox")
-  , ("M-w", do
-        windows $ W.greedyView "webdev"
-        spawn "pstree | grep iceweasel || firefox")
+        windows $ W.greedyView "ff")
+  , ("M-v", do
+        windows $ W.greedyView "vbox"
+        spawn "pgrep VirtualBox || virtualbox")
+  , ("M-d", do
+        windows $ W.greedyView "firefoxDevtools")
   , ("M-g", do
         windows $ W.greedyView "gimp"
-        spawn "pstree | grep gimp || gimp")  
+        spawn "pgrep gimp || gimp")
   , ("M-c", do
         windows $ W.greedyView "chrome"
-        spawn "pstree | grep chrome || google-chrome")
-  , ("M-d", do
+        spawn "pgrep chrome || google-chrome")
+  , ("M-o", do
         windows $ W.greedyView "files"
-        spawn "pstree | grep dolphin || dolphin")
+        spawn "pgrep dolphin || dolphin")
   , ("M-t",  windows $ W.greedyView "etc")
   , ("M-s", do
         windows $ W.greedyView "shell"
-        spawn "pstree | grep gnome-terminal || gnome-terminal")
+        spawn "pgrep gnome-terminal || gnome-terminal")
 
     -- apps
   , ("M-r", spawn "gmrun") -- app launcher
@@ -72,17 +77,24 @@ myKeys = [
   , ("M-l c", spawn "google-chrome")    
   , ("M-l s", spawn "gksu synaptic")
   , ("M-l e", spawn "emacsclient -c -a '' --no-wait")
+  , ("M-l b", spawn "calibre") -- books  
   ]
          
 
 myStartupHook = do
-  spawn "bash /home/zeno/sh/startup.sh"
+  spawn "sh -c /home/zeno/sh/init.sh"
+  spawn "gnome-terminal -x sudo /home/zeno/sh/root-server.sh"
+
+-- to get the prop of a program, run xprop, eg. xprop | grep WM_CLASS  
 
 myManageHook = composeAll
     [ (role =? "gimp-toolbox" <||> role =? "gimp-image-window") --> (ask >>= doF . W.sink)
     , (className =? "Firefox" <&&> resource=? "Download") --> doFloat 
     , (className =? "Firefox" <&&> resource =? "DTA") --> doFloat 
---    , (className =? "Iceweasel") --> doShift "ff"
+--    , (role =? "toolbox") --> doShift "firefoxDevtools"
+    , (className =? "VirtualBox") --> doShift "vbox"
+--      doF (W.shift "ff") -- Firefox Devtools
+--      doShift "firefoxDevtools" -- Firefox Devtools
 --    , (className =? "Iceweasel") --> doF (W.shift "ff")
 --    , (className =? "Emacs") --> doF (W.shift "emacs")
 --    , (className =? "Iceweasel") --> viewShift "ff"
@@ -100,11 +112,15 @@ myWorkspaces = [
   "files",
   "shell",
   "gimp",
-  "webdev", -- for mozrepl
-  "etc"
+  "webdev",
+  "firefoxDevtools",
+  "etc",
+  "vbox"
   ]
 
         
+myLayout = mouseResize $ windowArrange $ layoutHook defaultConfig
+
 main = do
   xmonad $defaultConfig
        {
@@ -112,6 +128,7 @@ main = do
          terminal           = "gnome-terminal",
          focusFollowsMouse  = True,
          workspaces         = myWorkspaces,
+         layoutHook         = myLayout,
          startupHook        = myStartupHook,
          borderWidth        = 2,
          modMask            = mod4Mask, -- use super
