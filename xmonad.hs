@@ -150,8 +150,8 @@ main = do
 --         , layoutHook = myLayout
          , modMask            = mod4Mask, -- use super
          manageHook         =  myManageHook <+> manageSpawn <+> manageHook defaultConfig,
-         normalBorderColor  = "#111",
+         normalBorderColor  = "#333",
 --         mouseBindings      = myMouseBindings,
-         focusedBorderColor = "#222"
+         focusedBorderColor = "#555"
        }
        `additionalKeysP` myKeys
