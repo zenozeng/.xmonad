@@ -47,39 +47,24 @@ myKeys = [
   , ("M-e", do
         windows $ W.greedyView "emacs"
         spawn "pgrep emacs || emacsclient -c -a '' --no-wait")
-  , ("M-f", do
-        windows $ W.greedyView "ff")
-  , ("M-v", do
-        windows $ W.greedyView "vbox"
-        spawn "pgrep VirtualBox || virtualbox")
   , ("M-g", do
         windows $ W.greedyView "gimp"
         spawn "pgrep gimp || gimp")
   , ("M-c", do
         windows $ W.greedyView "chrome"
         spawn "pgrep chrome || google-chrome")
-  , ("M-o", do
-        windows $ W.greedyView "files"
-        spawn "pgrep dolphin || dolphin")
   , ("M-t",  windows $ W.greedyView "etc")
   , ("M-s", do
         windows $ W.greedyView "shell"
         spawn "pgrep gnome-terminal || gnome-terminal")
-
-    -- apps
-  , ("M-r", spawn "gmrun") -- app launcher
-  , ("M-l d", spawn "dolphin")
-  , ("M-l f", spawn "firefox")
-  , ("M-l c", spawn "google-chrome")    
-  , ("M-l s", spawn "gksu synaptic")
-  , ("M-l e", spawn "emacsclient -c -a '' --no-wait")
-  , ("M-l b", spawn "calibre") -- books  
   ]
          
 
 myStartupHook = do
   spawn "sh -c /home/zeno/sh/init.sh"
   spawn "pgrep redshift || redshift -l 30.3:120.2 -t 6400:5400 &"
+  spawn "pgrep xcompmgr || xcompmgr"
+  spawn "pgrep synapse || synapse -s" -- I bind this on M-f
 
 -- to get the prop of a program, run xprop, eg. xprop | grep WM_CLASS  
 
@@ -103,15 +88,10 @@ myManageHook = composeAll
 
 myWorkspaces = [
   "emacs",
-  "ff",
   "chrome",
-  "files",
   "shell",
   "gimp",
-  "webdev",
-  "firefoxDevtools",
-  "etc",
-  "vbox"
+  "etc"
   ]
 
 main = do
@@ -121,9 +101,9 @@ main = do
          , focusFollowsMouse  = True
          , workspaces         = myWorkspaces
          , startupHook        = myStartupHook
-         , borderWidth        = 5
+         , borderWidth        = 0
          , modMask            = mod4Mask -- use super
-         , manageHook         =  myManageHook <+> manageSpawn <+> manageHook defaultConfig,
+         , manageHook         =  myManageHook <+> manageSpawn <+> manageHook defaultConfig
          , normalBorderColor  = "#333"
          , focusedBorderColor = "#555"
        }
