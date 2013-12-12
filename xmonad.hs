@@ -11,11 +11,19 @@ import XMonad.Layout.BorderResize
 import qualified XMonad.StackSet as W
 import qualified Data.Map as M
 import qualified XMonad.Actions.FlexibleResize as FlexR
+import XMonad.Prompt
+import XMonad.Prompt.Shell
 
 -- Define Functions
 lock = spawn "/usr/lib/kde4/libexec/kscreenlocker --forcelock"
 sleep = spawn "sudo pm-suspend-hybrid && /usr/lib/kde4/libexec/kscreenlocker --forcelock"
-
+printScreen interactive = let
+  cmd = " '%Y-%m-%dT%H:%m:%S_$wx$h.png' -e 'mv $f ~/shots/'"
+  a = "sleep 0.2; scrot -s"++cmd
+  b = "scrot"++cmd    
+  in if interactive
+     then spawn a
+     else spawn b
 
 myKeys = [ 
   ("M1-<Tab>"   , windows W.swapMaster)
@@ -26,24 +34,17 @@ myKeys = [
   , ("M-S-n", shiftToNext) -- move client to next workspace
   , ("M-S-p" , shiftToPrev) -- move client to prev workspace
   , ("M-k", kill)
-
   , ("M-q"        , spawn "xmonad --restart") -- restart xmonad w/o recompiling
-
   , ("<XF86Sleep>", sleep)
   , ("<XF86ScreenSaver>", lock)
-  , ("M-S-l", lock)
-
-    -- volume control 
+  , ("M-l", lock)
   , ("M-=", spawn "amixer sset Master 10%+")
   , ("M--", spawn "amixer sset Master 10%-")
   , ("<XF86AudioMute>",	spawn "amixer -q set Master toggle")
   , ("<XF86AudioLowerVolume>",	spawn "amixer -q set Master 3%-")
   , ("<XF86AudioRaiseVolume>",	spawn "amixer -q set Master 3%+")
-
-    -- print srceen
-  , ("<Print>", spawn "scrot PrtSc.png")
-
-    -- workspace
+  , ("<Print>", printScreen False)
+  , ("S-<Print>", printScreen True)
   , ("M-e", do
         windows $ W.greedyView "emacs"
         spawn "pgrep emacs || emacsclient -c -a '' --no-wait")
@@ -57,6 +58,10 @@ myKeys = [
   , ("M-s", do
         windows $ W.greedyView "shell"
         spawn "pgrep gnome-terminal || gnome-terminal")
+  , ("M-1", windows $ W.greedyView "untitled-1")
+  , ("M-2", windows $ W.greedyView "untitled-2")
+  , ("M-3", windows $ W.greedyView "untitled-3")
+  , ("M-4", windows $ W.greedyView "untitled-4")
   ]
          
 
@@ -64,34 +69,25 @@ myStartupHook = do
   spawn "sh -c /home/zeno/sh/init.sh"
   spawn "pgrep redshift || redshift -l 30.3:120.2 -t 6400:5400 &"
   spawn "pgrep xcompmgr || xcompmgr"
-  spawn "pgrep synapse || synapse -s" -- I bind this on M-f
-
--- to get the prop of a program, run xprop, eg. xprop | grep WM_CLASS  
+  spawn "pgrep synapse || synapse -s"
 
 myManageHook = composeAll
     [ (role =? "gimp-toolbox" <||> role =? "gimp-image-window") --> (ask >>= doF . W.sink)
     , (className =? "Firefox" <&&> resource=? "Download") --> doFloat 
     , (className =? "Firefox" <&&> resource =? "DTA") --> doFloat 
---    , (role =? "toolbox") --> doShift "firefoxDevtools"
     , (className =? "VirtualBox") --> doShift "vbox"
---      doF (W.shift "ff") -- Firefox Devtools
---      doShift "firefoxDevtools" -- Firefox Devtools
---    , (className =? "Iceweasel") --> doF (W.shift "ff")
---    , (className =? "Emacs") --> doF (W.shift "emacs")
---    , (className =? "Iceweasel") --> viewShift "ff"
---    , (className =? "Dolphin") --> doShift "files"
---    , (className =? "Google-chrome") --> doShift "chrome"
     ]
   where role = stringProperty "WM_WINDOW_ROLE"
---        viewShift = doF . liftM2 (.) W.greedyView W.shift
-
 
 myWorkspaces = [
-  "emacs",
-  "chrome",
-  "shell",
-  "gimp",
-  "etc"
+  "emacs"
+  , "chrome"
+  , "shell"
+  , "gimp"
+  , "untitled-1"
+  , "untitled-2"
+  , "untitled-3"
+  , "untitled-4"
   ]
 
 main = do

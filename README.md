@@ -13,3 +13,11 @@ This is Zeno Zeng's xmonad.hs.
 ## 启动器
 
 我用的是 synapse，然后绑在了 M-f 这个键上，用 xcompmgr 来提供透明以及阴影效果支持。
+
+## prop of a program
+
+to get the prop of a program, run xprop, eg. xprop | grep WM_CLASS  
+
+## lock
+
+I use kscreenlocker.
