@@ -6,27 +6,15 @@ import XMonad.Layout.IndependentScreens
 import XMonad.Actions.SpawnOn
 import XMonad.Actions.DynamicWorkspaces
 import Control.Monad (liftM2)
-
 import XMonad.Layout.WindowArranger
 import XMonad.Layout.BorderResize
--- myLayout = borderResize -- (... layout setup that reacts to SetGeometry ...)
--- main = xmonad defaultConfig { layoutHook = myLayout }
--- myLayout = mouseResize $ windowArrange $ layoutHook defaultConfig
-
-
--- import XMonad.Actions.MouseResize
-  
 import qualified XMonad.StackSet as W
 import qualified Data.Map as M
-
--- 鼠标左键 + Mod Key 移动，右键 + Mod Key 缩放，任意位置
 import qualified XMonad.Actions.FlexibleResize as FlexR
 
-
--- 关于GTK的外观，建议使用一个角lxappearance的东西设置一下GTK的主题
--- 切换显示器只要将鼠标移到另一个显示器就好
-
--- myLayout = borderResize $ windowArrange $ layoutHook defaultConfig
+-- Define Functions
+lock = spawn "/usr/lib/kde4/libexec/kscreenlocker --forcelock"
+sleep = spawn "sudo pm-suspend-hybrid && /usr/lib/kde4/libexec/kscreenlocker --forcelock"
 
 
 myKeys = [ 
@@ -41,11 +29,9 @@ myKeys = [
 
   , ("M-q"        , spawn "xmonad --restart") -- restart xmonad w/o recompiling
 
-    -- sleep
-  , ("<XF86Sleep>", spawn "sudo pm-suspend-hybrid && /usr/lib/kde4/libexec/kscreenlocker --forcelock")
-    
-    -- lock
-  , ("<XF86ScreenSaver>", spawn "/usr/lib/kde4/libexec/kscreenlocker --forcelock")
+  , ("<XF86Sleep>", sleep)
+  , ("<XF86ScreenSaver>", lock)
+  , ("M-S-l", lock)
 
     -- volume control 
   , ("M-=", spawn "amixer sset Master 10%+")
@@ -66,8 +52,6 @@ myKeys = [
   , ("M-v", do
         windows $ W.greedyView "vbox"
         spawn "pgrep VirtualBox || virtualbox")
-  , ("M-d", do
-        windows $ W.greedyView "firefoxDevtools")
   , ("M-g", do
         windows $ W.greedyView "gimp"
         spawn "pgrep gimp || gimp")
@@ -95,7 +79,7 @@ myKeys = [
 
 myStartupHook = do
   spawn "sh -c /home/zeno/sh/init.sh"
-  spawn "gnome-terminal -x sudo /home/zeno/sh/root-server.sh"
+  spawn "pgrep redshift || redshift -l 30.3:120.2 -t 6400:5400 &"
 
 -- to get the prop of a program, run xprop, eg. xprop | grep WM_CLASS  
 
@@ -130,28 +114,17 @@ myWorkspaces = [
   "vbox"
   ]
 
--- myMouseBindings (XConfig {XMonad.modMask = modMask}) = M.fromList $
---     [
---       ((modMask, button3), (\w -> focus w >> FlexR.mouseResizeWindow w))
---     ]
-
-
-        
 main = do
   xmonad $defaultConfig
        {
-         -- basic config
-         terminal           = "gnome-terminal",
-         focusFollowsMouse  = True,
-         workspaces         = myWorkspaces,
-         startupHook        = myStartupHook,
-         borderWidth        = 5
---         layoutHook = myLayout,
---         , layoutHook = myLayout
-         , modMask            = mod4Mask, -- use super
-         manageHook         =  myManageHook <+> manageSpawn <+> manageHook defaultConfig,
-         normalBorderColor  = "#333",
---         mouseBindings      = myMouseBindings,
-         focusedBorderColor = "#555"
+         terminal           = "gnome-terminal"
+         , focusFollowsMouse  = True
+         , workspaces         = myWorkspaces
+         , startupHook        = myStartupHook
+         , borderWidth        = 5
+         , modMask            = mod4Mask -- use super
+         , manageHook         =  myManageHook <+> manageSpawn <+> manageHook defaultConfig,
+         , normalBorderColor  = "#333"
+         , focusedBorderColor = "#555"
        }
        `additionalKeysP` myKeys
