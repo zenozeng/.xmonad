@@ -1,4 +1,6 @@
+-- Import
 import XMonad
+import XMonad.Util.Run(spawnPipe)
 import XMonad.Actions.CycleWS    
 import XMonad.Actions.CycleWindows
 import XMonad.Util.EZConfig        -- append key/mouse bindings
@@ -14,6 +16,8 @@ import qualified XMonad.Actions.FlexibleResize as FlexR
 import XMonad.Prompt
 import XMonad.Prompt.Shell
 import XMonad.Hooks.EwmhDesktops
+import XMonad.Hooks.DynamicLog
+import XMonad.Hooks.ManageDocks
 
 -- Define Functions
 lock = spawn "/usr/lib/kde4/libexec/kscreenlocker --forcelock"
@@ -92,6 +96,7 @@ myWorkspaces = [
   ]
 
 main = do
+  xmproc <- spawnPipe "xmobar ~/.xmonad/xmobar.hs"
   xmonad $defaultConfig
        {
          terminal           = "gnome-terminal"
@@ -100,6 +105,7 @@ main = do
          , startupHook        = myStartupHook
          , borderWidth        = 0
          , modMask            = mod4Mask -- use super
+         , layoutHook = avoidStruts  $  layoutHook defaultConfig
          , handleEventHook    = fullscreenEventHook
          , manageHook         =  myManageHook <+> manageSpawn <+> manageHook defaultConfig
          , normalBorderColor  = "#333"
