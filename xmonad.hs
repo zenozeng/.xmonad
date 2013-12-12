@@ -13,6 +13,7 @@ import qualified Data.Map as M
 import qualified XMonad.Actions.FlexibleResize as FlexR
 import XMonad.Prompt
 import XMonad.Prompt.Shell
+import XMonad.Hooks.EwmhDesktops
 
 -- Define Functions
 lock = spawn "/usr/lib/kde4/libexec/kscreenlocker --forcelock"
@@ -99,6 +100,7 @@ main = do
          , startupHook        = myStartupHook
          , borderWidth        = 0
          , modMask            = mod4Mask -- use super
+         , handleEventHook    = fullscreenEventHook
          , manageHook         =  myManageHook <+> manageSpawn <+> manageHook defaultConfig
          , normalBorderColor  = "#333"
          , focusedBorderColor = "#555"
