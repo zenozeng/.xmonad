@@ -3,7 +3,7 @@ Config {
   , bgColor = "#333"
   , fgColor = "#7c7"
   , position = TopSize L 100 30
-  , lowerOnStart = False
+  , lowerOnStart = True
   , commands = [ 
                Run Battery ["-t", "<left>% <timeleft>", "-L", "20", "-H", "75", "-h",
                               "green", "-n", "yellow", "-l", "red"] 60
