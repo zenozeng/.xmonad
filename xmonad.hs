@@ -95,14 +95,23 @@ myWorkspaces = [
   , "untitled-4"
   ]
 
+myLogHook = dynamicLogString xmobarPP {
+  ppCurrent = xmobarColor "#7c7" "#000" . wrap " " " ",
+  ppHidden = xmobarColor "#999" "" . wrap " " " ",
+  ppSep = "  ",
+  ppOrder = \(ws:l:t:_) -> [ws,t],
+  ppTitle = xmobarColor "#999" "" . shorten 50
+  } >>= xmonadPropLog
+
 main = do
-  xmproc <- spawnPipe "xmobar ~/.xmonad/xmobar.hs"
+  xmproc <- spawnPipe "killall xmobar; xmobar ~/.xmonad/xmobar.hs"
   xmonad $defaultConfig
        {
          terminal           = "gnome-terminal"
          , focusFollowsMouse  = True
          , workspaces         = myWorkspaces
          , startupHook        = myStartupHook
+         , logHook = myLogHook
          , borderWidth        = 0
          , modMask            = mod4Mask -- use super
          , layoutHook = avoidStruts  $  layoutHook defaultConfig

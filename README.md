@@ -21,3 +21,9 @@ to get the prop of a program, run xprop, eg. xprop | grep WM_CLASS
 ## lock
 
 I use kscreenlocker.
+
+## border for xmobar
+```
+--  , border = BottomBM 0
+--  , borderColor = "#7c7"
+```
