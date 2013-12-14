@@ -18,6 +18,7 @@ import XMonad.Prompt.Shell
 import XMonad.Hooks.EwmhDesktops
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.ManageDocks
+import XMonad.Hooks.ManageHelpers
 
 -- Define Functions
 lock = spawn "/usr/lib/kde4/libexec/kscreenlocker --forcelock"
@@ -25,7 +26,7 @@ sleep = spawn "sudo pm-suspend-hybrid && /usr/lib/kde4/libexec/kscreenlocker --f
 printScreen interactive = let
   cmd = " '%Y-%m-%dT%H:%m:%S_$wx$h.png' -e 'mv $f ~/shots/'"
   a = "sleep 0.2; scrot -s"++cmd
-  b = "scrot"++cmd    
+  b = "scrot"++cmd
   in if interactive
      then spawn a
      else spawn b
@@ -72,7 +73,7 @@ myKeys = [
 
 myStartupHook = do
   spawn "sh -c /home/zeno/sh/init.sh"
-  spawn "pgrep redshift || redshift -l 30.3:120.2 -t 6400:5400 &"
+  spawn "pgrep redshift || redshift -l 30.3:120.2 -t 6400:5000 &"
   spawn "pgrep xcompmgr || xcompmgr"
   spawn "pgrep synapse || synapse -s"
 
@@ -81,6 +82,7 @@ myManageHook = composeAll
     , (className =? "Firefox" <&&> resource=? "Download") --> doFloat 
     , (className =? "Firefox" <&&> resource =? "DTA") --> doFloat 
     , (className =? "VirtualBox") --> doShift "vbox"
+    , isFullscreen --> doFullFloat
     ]
   where role = stringProperty "WM_WINDOW_ROLE"
 

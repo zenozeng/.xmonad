@@ -5,8 +5,7 @@ Config {
   , position = TopSize L 100 30
   , lowerOnStart = True
   , commands = [ 
-               Run Battery ["-t", "<left>% <timeleft>", "-L", "20", "-H", "75", "-h",
-                              "green", "-n", "yellow", "-l", "red"] 60
+               Run Battery ["-t", "<left>% <timeleft>", "-L", "20", "-H", "75", "-h", "green", "-n", "yellow", "-l", "red"] 60
                , Run Date "%Y-%m-%d %H:%M:%S" "date" 10
                , Run BatteryP ["BAT0"]
                   ["-t", "<left>%",
