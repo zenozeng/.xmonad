@@ -75,6 +75,8 @@ myStartupHook = do
   spawn "sh -c /home/zeno/sh/init.sh"
   spawn "pgrep redshift || redshift -l 30.3:120.2 -t 6400:5000 &"
   spawn "pgrep xcompmgr || xcompmgr"
+  -- Turn off LVDS1 when VGA1 avaiable
+  spawn "xrandr | grep VGA1 && xrandr --output VGA1 --primary --auto && xrandr --output LVDS1 --off"
   spawn "pgrep synapse || synapse -s"
 
 myManageHook = composeAll
