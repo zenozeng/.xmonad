@@ -24,7 +24,7 @@ import XMonad.Hooks.ManageHelpers
 lock = spawn "/usr/lib/kde4/libexec/kscreenlocker --forcelock"
 sleep = spawn "sudo pm-suspend-hybrid && /usr/lib/kde4/libexec/kscreenlocker --forcelock"
 printScreen interactive = let
-  cmd = " '%Y-%m-%dT%H:%m:%S_$wx$h.png' -e 'mv $f ~/shots/'"
+  cmd = " '%Y-%m-%dT%H:%M:%S_$wx$h.png' -e 'mv $f ~/shots/'"
   a = "sleep 0.2; scrot -s"++cmd
   b = "scrot"++cmd
   in if interactive
@@ -76,7 +76,7 @@ myStartupHook = do
   spawn "pgrep redshift || redshift -l 30.3:120.2 -t 6400:5000 &"
   spawn "pgrep xcompmgr || xcompmgr"
   -- Turn off LVDS1 when VGA1 avaiable
-  spawn "xrandr | grep VGA1 && xrandr --output VGA1 --primary --auto && xrandr --output LVDS1 --off"
+  --  spawn "xrandr | grep VGA1 && xrandr --output VGA1 --primary --auto && xrandr --output LVDS1 --off"
   spawn "pgrep synapse || synapse -s"
 
 myManageHook = composeAll

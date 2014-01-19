@@ -15,7 +15,7 @@ Config {
                    "-l", "red", "-m", "blue", "-h", "green"]
                   600
                , Run XMonadLog
-               , Run Com "/home/zeno/.xmonad/sh/volume.sh" [] "vol" 100
+               , Run Com "/home/zeno/.xmonad/sh/volume.sh" [] "vol" 5
                , Run Com "/bin/bash" ["-c", "~/.xmonad/sh/essid.sh"] "essid" 10
                , Run Com "/bin/bash" ["-c", "~/.xmonad/sh/ip.sh"] "ip" 10
                , Run Com "/bin/bash" ["-c", "~/.xmonad/sh/uptime.sh"] "uptime" 100
