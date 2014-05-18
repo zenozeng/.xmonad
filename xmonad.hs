@@ -21,16 +21,6 @@ import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.ManageHelpers
 
 -- Define Functions
-lock = spawn "/usr/lib/kde4/libexec/kscreenlocker --forcelock"
-sleep = spawn "sudo pm-suspend-hybrid && /usr/lib/kde4/libexec/kscreenlocker --forcelock"
-printScreen interactive = let
-  cmd = " '%Y-%m-%dT%H:%M:%S_$wx$h.png' -e 'mv $f ~/shots/'"
-  a = "sleep 0.2; scrot -s"++cmd
-  b = "scrot"++cmd
-  in if interactive
-     then spawn a
-     else spawn b
-
 myKeys = [ 
   ("M1-<Tab>"   , windows W.swapMaster)
   , ("M-<Return>" , spawn "gnome-terminal")
@@ -41,16 +31,11 @@ myKeys = [
   , ("M-S-p" , shiftToPrev) -- move client to prev workspace
   , ("M-k", kill)
   , ("M-q"        , spawn "xmonad --restart") -- restart xmonad w/o recompiling
-  , ("<XF86Sleep>", sleep)
-  , ("<XF86ScreenSaver>", lock)
-  , ("M-l", lock)
   , ("M-=", spawn "amixer sset Master 10%+")
   , ("M--", spawn "amixer sset Master 10%-")
   , ("<XF86AudioMute>",	spawn "amixer -q set Master toggle")
   , ("<XF86AudioLowerVolume>",	spawn "amixer -q set Master 3%-")
   , ("<XF86AudioRaiseVolume>",	spawn "amixer -q set Master 3%+")
-  , ("<Print>", printScreen False)
-  , ("S-<Print>", printScreen True)
   , ("M-e", do
         windows $ W.greedyView "emacs"
         spawn "pgrep emacs || emacsclient -c -a '' --no-wait")
@@ -99,16 +84,7 @@ myWorkspaces = [
   , "untitled-4"
   ]
 
-myLogHook = dynamicLogString xmobarPP {
-  ppCurrent = xmobarColor "#7c7" "#000" . wrap " " " ",
-  ppHidden = xmobarColor "#999" "" . wrap " " " ",
-  ppSep = "  ",
-  ppOrder = \(ws:l:t:_) -> [ws,t],
-  ppTitle = xmobarColor "#999" "" . shorten 50
-  } >>= xmonadPropLog
-
 main = do
-  xmproc <- spawnPipe "killall xmobar; xmobar ~/.xmonad/xmobar.hs"
   xmonad $defaultConfig
        {
          terminal           = "gnome-terminal"
@@ -117,7 +93,7 @@ main = do
          , startupHook        = myStartupHook
          , logHook = myLogHook
          , borderWidth        = 0
-         , modMask            = mod4Mask -- use super
+--         , modMask            = mod4Mask -- use super
          , layoutHook = avoidStruts  $  layoutHook defaultConfig
          , handleEventHook    = fullscreenEventHook
          , manageHook         =  myManageHook <+> manageSpawn <+> manageHook defaultConfig
